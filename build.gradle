@@ -1,0 +1,41 @@
+plugins {
+    id 'java'
+    id 'war'
+}
+
+group 'org.yangxin.groovy'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    // https://mvnrepository.com/artifact/ch.qos.logback/logback-classic
+    compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+}
+
+def createDir = {
+    String path ->
+        File dir = new File(path)
+        if (!dir.exists()) {
+            dir.mkdirs()
+        }
+}
+
+task makeJavaDir() {
+    def paths = ['src/main/java', 'src/main/resources', 'src/test/java', 'src/test/resource']
+    doFirst {
+        paths.forEach(createDir)
+    }
+}
+
+task makeWebDir() {
+    dependsOn 'makeJavaDir'
+    def paths = ['src/main/webapp', 'src/test/webapp']
+    doLast {
+        paths.forEach(createDir)
+    }
+}
